@@ -19,8 +19,14 @@ public class EmailRequestDTO {
 	 */
 	private String accountKey;
 
+	/*
+	 * Comma-separated list of recipient email addresses. For multiple recipients, use a comma to separate them, e.g.:
+	 */
     private String to;
 
+    /*
+     * Comma-separated list of CC email addresses. Optional. For multiple CC recipients, use a comma to separate them, e.g.:
+     */
     private String cc;
 
     private String subject;

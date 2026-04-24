@@ -3,6 +3,7 @@ package com.email_service.service;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -48,12 +49,12 @@ public class EmailSenderService {
 
             String fromAddress = buildFromAddress(account);
             helper.setFrom(fromAddress);
-            helper.setTo(request.getTo());
+            helper.setTo(splitAddresses(request.getTo()));
             helper.setSubject(request.getSubject());
             helper.setText(request.getBody(), true);
 
             if (request.getCc() != null && !request.getCc().isBlank()) {
-                helper.setCc(request.getCc());
+                helper.setCc(splitAddresses(request.getCc()));
             }
 
             if (hasAttachments) {
@@ -93,6 +94,16 @@ public class EmailSenderService {
             return account.getFromName();
         }
         return account.getUsername();
+    }
+
+    private String[] splitAddresses(String addresses) {
+        if (addresses == null || addresses.isBlank()) {
+            return new String[0];
+        }
+        return Arrays.stream(addresses.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isBlank())
+                .toArray(String[]::new);
     }
 
     private void persistLog(
